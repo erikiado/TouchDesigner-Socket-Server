@@ -5,14 +5,14 @@ const app = express();
 app.use(express.static("public"));
 // require("dotenv").config();
 
-const serverPort = process.env.PORT || 3000;
+const serverPort = process.env.PORT || 3009;
 const server = http.createServer(app);
 const WebSocket = require("ws");
 
 let keepAliveId;
 
 const wss =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === "production" || true 
     ? new WebSocket.Server({ server })
     : new WebSocket.Server({ port: 5001 });
 
