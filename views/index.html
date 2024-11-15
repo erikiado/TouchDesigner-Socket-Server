@@ -18,6 +18,15 @@
     <h2>Slider controlled by TD</h2>
     <input type="range" class="controlledByTD">
     
+
+    <input type="file" id="fileInput" accept=".mov, .mp4, image/*" capture="camera" />
+    <button onclick="uploadFile()">Upload</button>
+    <button onclick="openCamera()">Take Photo/Video</button>
+    <video id="cameraPreview" autoplay playsinline style="display: none; width: 100%; height: auto;"></video>
+    <button id="captureButton" style="display: none;" onclick="captureMedia()">Capture</button>
+
+
+
     <script src="/script.js" defer></script>
 </body>
 </html>
