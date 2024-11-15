@@ -1,8 +1,10 @@
 const http = require("http");
 const express = require("express");
 const app = express();
+const path = require('path');
 
-app.use(express.static("public"));
+//app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 // require("dotenv").config();
 
 const serverPort = process.env.PORT || 3009;
@@ -15,9 +17,6 @@ const wss =
   process.env.NODE_ENV === "production" || true 
     ? new WebSocket.Server({ server })
     : new WebSocket.Server({ port: 5001 });
-
-server.listen(serverPort);
-console.log(`Server started on port ${serverPort} in stage ${process.env.NODE_ENV}`);
 
 wss.on("connection", function (ws, req) {
   console.log("Connection Opened");
@@ -79,5 +78,11 @@ const broadcast = (ws, message, includeSelf) => {
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
+
+
+server.listen(serverPort);
+console.log(`Server started on port ${serverPort} in stage ${process.env.NODE_ENV}`);
+
+
