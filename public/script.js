@@ -27,7 +27,7 @@ ws.addEventListener('message', (message) => {
         controlledByTD.value = data["slider1"] * 100;
       }
       console.log("got data", data);
-      color = {};
+      let color = {};
       if ("r" in data) {
         color["r"] = data["r"];
       }
@@ -40,7 +40,8 @@ ws.addEventListener('message', (message) => {
 
       console.log(color);
       // set background color
-      document.body.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+      let colorString = `rgb(${color["r"]}, ${color["g"]}, ${color["b"]})`;
+      document.body.style.backgroundColor = colorString; 
     }
   }
   console.log("message", message)
