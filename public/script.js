@@ -40,7 +40,8 @@ ws.addEventListener('message', (message) => {
 
       console.log(color);
       // set background color
-      let colorString = `rgb(${color["r"]}, ${color["g"]}, ${color["b"]})`;
+      // rgb from 0-1 to 0-255
+      let colorString = `rgb(${color["r"] * 255}, ${color["g"] * 255}, ${color["b"] * 255})`;
       console.log(colorString);
       document.body.style.backgroundColor = colorString; 
     }
