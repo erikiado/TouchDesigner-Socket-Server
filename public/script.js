@@ -27,6 +27,19 @@ ws.addEventListener('message', (message) => {
         controlledByTD.value = data["slider1"] * 100;
       }
       console.log("got data", data);
+      color = {};
+      if ("r" in data) {
+        color["r"] = data["r"];
+      }
+      if ("g" in data) {
+        color["g"] = data["g"];
+      }
+      if ("b" in data) {
+        color["b"] = data["b"];
+      }
+
+      // set background color
+      document.body.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
   }
   console.log("message", message)
