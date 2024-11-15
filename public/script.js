@@ -38,6 +38,7 @@ ws.addEventListener('message', (message) => {
         color["b"] = parseFloat(data["b"]);
       }
 
+      console.log(color);
       // set background color
       document.body.style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
     }
