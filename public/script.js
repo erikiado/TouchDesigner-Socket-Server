@@ -29,13 +29,13 @@ ws.addEventListener('message', (message) => {
       console.log("got data", data);
       color = {};
       if ("r" in data) {
-        color["r"] = data["r"];
+        color["r"] = parseFloat(data["r"]);
       }
       if ("g" in data) {
-        color["g"] = data["g"];
+        color["g"] = parseFloat(data["g"]);
       }
       if ("b" in data) {
-        color["b"] = data["b"];
+        color["b"] = parseFloat(data["b"]);
       }
 
       // set background color
