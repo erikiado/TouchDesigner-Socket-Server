@@ -41,6 +41,7 @@ ws.addEventListener('message', (message) => {
       console.log(color);
       // set background color
       let colorString = `rgb(${color["r"]}, ${color["g"]}, ${color["b"]})`;
+      console.log(colorString);
       document.body.style.backgroundColor = colorString; 
     }
   }
