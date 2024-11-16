@@ -9,15 +9,42 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>silo ni9ht</h1>
-    <p style="font-size: 10px">This is a basic HTML page served by an Express.js server.</p>
+    <div class="fullscreen-bricks">
+    </div>
+    <div class="page-container">
+
+    <!--<button onclick="openModal()">Open Modal</button>-->
+    <h1 class="jac-title">silo ni9ht</h1>
+    <p style="font-size: 10px">*this is a basic html page served by an express.js server.</p>
     
+    </br></br>
 
     <input type="file" id="fileInput" accept=".mov, .mp4, image/*" capture="camera" />
-    <button onclick="uploadFile()">Upload</button>
+    <button id="uploadButton" style="display:none;" onclick="uploadFile()">Upload</button>
     <!--<button onclick="openCamera()">Take Photo/Video</button>-->
     <!--<video id="cameraPreview" autoplay playsinline style="display: none; width: 100%; height: auto;"></video>-->
     <!--<button id="captureButton" style="display: none;" onclick="captureMedia()">Capture</button>-->
+
+    </div>
+
+    <div id="modal" style="display: none;">
+        <div id="modalContent">
+            <!--<button onclick="closeModal()">Close</button>-->
+
+            <div>
+                <h2 class="jac-title" style="margin-bottom:1rem;">desconectado</h2>
+                <p>recarga la pagina para volver a conectarte</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="progressBar" style="display: none;">
+        <div id="progressContainer">
+            <div class="loader-xo"></div>
+            <!--<p id="progressText">perame tantito...</p>-->
+            <!--<div id="progress" style="width: 0%;"></div>-->
+        </div>
+    </div>
 
 
     <script src="/script.js" defer></script>
