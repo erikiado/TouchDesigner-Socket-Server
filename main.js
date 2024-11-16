@@ -83,6 +83,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/get-presign-url', async (req, res) => {
+  console.log('get-presign-url');
+  console.log('req.body: ', req.body);
+  const body = req.body;
+
   const { fileName, fileType, key, bucket } = req.body;
   console.log('fileName: ', fileName);
   console.log('fileType: ', fileType);
