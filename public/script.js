@@ -59,6 +59,10 @@ ws.addEventListener('message', (message) => {
       let colorString = `rgb(${color["r"] * 255}, ${color["g"] * 255}, ${color["b"] * 255})`;
       console.log(colorString);
       document.body.style.backgroundColor = colorString; 
+
+      if('artist' in data){
+        document.getElementById('nowPlayingText').innerText = data['artist'];
+      }
     }
   }
   console.log("message", message)
