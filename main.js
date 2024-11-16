@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.post('/get-presign-url', (req, res) => {
+app.post('/get-presign-url', async (req, res) => {
   const { fileName, fileType, key, bucket } = req.body;
   console.log('fileName: ', fileName);
   console.log('fileType: ', fileType);
