@@ -100,7 +100,8 @@ app.post('/get-presign-url', async (req, res) => {
     "file":filePath,
     "file_type":fileType,
     key,
-    "bucket": "nu9ve-eventos"
+    "bucket": "nu9ve-eventos",
+    "content_type": fileType
   });
   console.log('preSignUrl: ', preSignUrl.data);
   res.send(preSignUrl.data);
