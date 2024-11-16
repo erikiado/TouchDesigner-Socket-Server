@@ -102,8 +102,8 @@ app.post('/get-presign-url', async (req, res) => {
     key,
     bucket
   });
-  console.log('preSignUrl: ', preSignUrl);
-  res.send(preSignUrl);
+  console.log('preSignUrl: ', preSignUrl.data);
+  res.send(preSignUrl.data);
 
 });
 
