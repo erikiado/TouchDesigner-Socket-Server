@@ -2,6 +2,7 @@
 const progressBar = document.getElementById('progressBar');
 const progressText = document.getElementById('progressText');
 const progressContainer = document.getElementById('progressContainer');
+const successMessage = document.getElementById('successMessage');
 
 
 function showProgress() {
@@ -206,17 +207,20 @@ async function uploadFile() {
             }));
 
             fileInput.style.display = 'block';
+            successMessage.style.display = 'block';
             hideProgress();
         } else {
             fileInput.style.display = 'block';
             //alert('Failed to upload file.');
             hideProgress();
+            successMessage.style.display = 'none';
         }
     } catch (error) {
         console.error('Error uploading file:', error);
         //alert('Error uploading file. Check console for details.');
         hideProgress();
         showModal();
+        successMessage.style.display = 'none';
     }
 }
 

@@ -14,13 +14,20 @@
     <div class="page-container">
 
     <!--<button onclick="openModal()">Open Modal</button>-->
-    <h1 class="jac-title">silo ni9ht</h1>
+    <h1 class="jac-title" style="font-size:5.5rem">silo ni9ht</h1>
     <p style="font-size: 10px">*this is a basic html page served by an express.js server.</p>
+    <p>pasanos una foto un video y lo ponemos en las pantallas :)</p>
     
-    </br></br>
+    </br>
+
+    <button id="uploadButton" style="display:none;" onclick="uploadFile()">Upload</button>
+    <div id="successMessage" style="display: none;">
+        <h2 class="jac-title" style="margin-bottom:0.5rem;">rifadx</h2>
+        <p>se subio todo chido</p>
+        <p>otro?</p>
+    </div>
 
     <input type="file" id="fileInput" accept=".mov, .mp4, image/*" capture="camera" />
-    <button id="uploadButton" style="display:none;" onclick="uploadFile()">Upload</button>
     <!--<button onclick="openCamera()">Take Photo/Video</button>-->
     <!--<video id="cameraPreview" autoplay playsinline style="display: none; width: 100%; height: auto;"></video>-->
     <!--<button id="captureButton" style="display: none;" onclick="captureMedia()">Capture</button>-->

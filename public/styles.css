@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Handjet:wght@100..900&family=Jacquard+12&family=Shippori+Antique&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+
 :root {
   --color-bg: #cccc99;
   --color-text-main: #000000;
@@ -25,6 +26,9 @@ body {
   font-weight: 400;
   font-style: normal;
   background-color: var(--color-bg);
+  display: flex;
+  justify-content: center;
+
 }
 
 body, html {
@@ -32,9 +36,51 @@ body, html {
   margin: 0;
 }
 
+input[type="file"]::file-selector-button {
+  display: none;
+}
 
+input[type="file"], button {
+  display: inline-block;
+  outline: 0;
+  cursor: pointer;
+  border: none;
+  padding: 4px 16px;
+  height: 45px;
+  line-height: 45px;
+  border-radius: 7px;
+  background-color: #f0f0f3;
+  color: black;
+  font-family: "Ubuntu Mono", monospace;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  font-size: 16px;
+  box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);
+  transition: background 0.2s ease,color 0.2s ease,box-shadow 0.2s ease;
+  :hover{
+      background: rgba(0,118,255,0.9);
+      box-shadow: 0 6px 20px rgb(0 118 255 / 23%);
+  }
+}        
 
-
+.shippori-antique-regular {
+  font-family: "Shippori Antique", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.handjet-font {
+  font-family: "Handjet", serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings:
+    "ELGR" 1,
+    "ELSH" 2;
+}
 .page-container {
   display: flex;
   flex-direction: column;
@@ -42,7 +88,7 @@ body, html {
   justify-content: center;
   height: 100vh;
   text-align: center;
-  width: 100%;
+  width: 90%;
 
 }
 
@@ -124,7 +170,7 @@ body, html {
   display: flex;
   align-items: flex-start;
   aspect-ratio: 1;
-  transform: scale(4);
+  transform: scale(2);
 }
 .loader-xo:before,
 .loader-xo:after {
@@ -172,12 +218,12 @@ div.fullscreen-bricks {
 
 .jac-title {
   font-family: 'Jacquard 12', serif;
-  font-size: 4rem;
+  font-size: 3rem;
   /*color: #FF0000;*/
 }
 
 h1.jac-title {
-  font-size: 4rem;
+  font-size: 3rem;
   /*color: #FF0000;*/
   margin-bottom: 1rem;
 }
@@ -225,3 +271,16 @@ div.fullscreen-bricks {
 }
 
 
+@media only screen and (max-width: 600px) {
+  .page-container {
+    height: 100%;
+    width: 90%; 
+  }
+  .jac-title {
+    font-size: 3rem;
+  }
+
+  #progressContainer {
+    width: 80%;
+  }
+}
