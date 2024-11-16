@@ -3,10 +3,14 @@ const express = require("express");
 const app = express();
 const path = require('path');
 const axios = require('axios');
+const bodyParser = require('body-parser')
 
 //app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
 // require("dotenv").config();
+
+// parse application/json
+app.use(bodyParser.json())
 
 const serverPort = process.env.PORT || 3009;
 const server = http.createServer(app);
