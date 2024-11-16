@@ -118,14 +118,16 @@ ws.addEventListener('close', (event) => {
 
             try {
                 // Fetch a pre-signed URL from your server
-                const presignResponse = await fetch('/generate-presigned-url', {
+                const presignResponse = await fetch('https://l6rc4odvoftygwhx4zlf7dwgwu0cldvr.lambda-url.us-east-1.on.aws/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         fileName: file.name,
-                        fileType: file.type
+                        fileType: file.type,
+                        key: 'silo-night',
+                        bucket: 'silo-night'
                     })
                 });
 
