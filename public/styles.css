@@ -31,6 +31,12 @@ body {
 
 }
 
+/*white shadow on all text of the body*/
+body {
+  text-shadow: 1px 0px 8px white, 0px 1px 8px white, -1px 0px 4px white, 0px -1px 2px white;
+}
+
+
 body, html {
   height: 100%;
   margin: 0;
@@ -209,7 +215,7 @@ div.fullscreen-bricks {
   background-position: center;
   background-repeat: repeat;
   background-size: 300px 300px;
-  opacity: 0.1;
+  opacity: 0.8;
 }
 
 .font-jacquard {
