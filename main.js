@@ -2,6 +2,7 @@ const http = require("http");
 const express = require("express");
 const app = express();
 const path = require('path');
+const axios = require('axios');
 
 //app.use(express.static("public"));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -81,6 +82,25 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+app.post('/get-presign-url', (req, res) => {
+  const { fileName, fileType, key, bucket } = req.body;
+  console.log('fileName: ', fileName);
+  console.log('fileType: ', fileType);
+  
+  let functionUrl = 'https://l6rc4odvoftygwhx4zlf7dwgwu0cldvr.lambda-url.us-east-1.on.aws/'; 
+  console.log('functionUrl: ', functionUrl);
+
+  // send data to lambda function 
+  preSignUrl = await axios.post(functionUrl, {
+    fileName,
+    fileType,
+    key,
+    bucket
+  });
+  console.log('preSignUrl: ', preSignUrl);
+  res.send(preSignUrl);
+
+});
 
 server.listen(serverPort);
 console.log(`Server started on port ${serverPort} in stage ${process.env.NODE_ENV}`);

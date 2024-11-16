@@ -61,98 +61,106 @@ ws.addEventListener('close', (event) => {
 
 
 
- function openCamera() {
-            const video = document.getElementById('cameraPreview');
-            const captureButton = document.getElementById('captureButton');
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then((stream) => {
-                    video.style.display = 'block';
-                    captureButton.style.display = 'block';
-                    video.srcObject = stream;
-                })
-                .catch((error) => {
-                    console.error('Error accessing camera:', error);
-                    alert('Error accessing camera.');
-                });
+function openCamera() {
+    const video = document.getElementById('cameraPreview');
+    const captureButton = document.getElementById('captureButton');
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            video.style.display = 'block';
+            captureButton.style.display = 'block';
+            video.srcObject = stream;
+        })
+        .catch((error) => {
+            console.error('Error accessing camera:', error);
+            alert('Error accessing camera.');
+        });
+}
+
+function captureMedia() {
+    const video = document.getElementById('cameraPreview');
+    const stream = video.srcObject;
+    const track = stream.getVideoTracks()[0];
+    const imageCapture = new ImageCapture(track);
+    
+    imageCapture.takePhoto()
+        .then(blob => {
+            track.stop(); // Stop the video stream
+            document.getElementById('fileInput').files = createFileList(blob);
+            alert('Photo captured successfully! Ready to upload.');
+        })
+        .catch(error => {
+            console.error('Error capturing photo:', error);
+            alert('Error capturing photo.');
+        });
+}
+
+function createFileList(file) {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(new File([file], 'captured-image.jpg', { type: file.type }));
+    return dataTransfer.files;
+}
+
+async function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert('Please select a file to upload.');
+        return;
+    }
+
+    // Check file type to ensure it is MOV, MP4, or an image
+    const validTypes = ['video/mp4', 'video/quicktime', 'image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+        alert('Invalid file type. Only MOV, MP4, and image files are allowed.');
+        return;
+    }
+
+    try {
+        console.log('Uploading file:', file.name);
+        console.log('File type:', file.type);
+        console.log('File size:', file.size);
+        console.log('Last modified date:', file.lastModifiedDate);
+        // Fetch a pre-signed URL from your server
+        const presignResponse = await fetch('/get-presign-url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                fileName: file.name,
+                fileType: file.type,
+                key: 'silo-night',
+                bucket: 'silo-night'
+            })
+        });
+
+        console.log('Presign response:', presignResponse);
+
+        if (!presignResponse.ok) {
+            throw new Error('Failed to get presigned URL');
         }
 
-        function captureMedia() {
-            const video = document.getElementById('cameraPreview');
-            const stream = video.srcObject;
-            const track = stream.getVideoTracks()[0];
-            const imageCapture = new ImageCapture(track);
-            
-            imageCapture.takePhoto()
-                .then(blob => {
-                    track.stop(); // Stop the video stream
-                    document.getElementById('fileInput').files = createFileList(blob);
-                    alert('Photo captured successfully! Ready to upload.');
-                })
-                .catch(error => {
-                    console.error('Error capturing photo:', error);
-                    alert('Error capturing photo.');
-                });
+        const { uploadUrl } = await presignResponse.json();
+
+        console.log('Upload URL:', uploadUrl);
+
+        // Upload the file to S3 using the pre-signed URL
+        const uploadResponse = await fetch(uploadUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': file.type
+            },
+            body: file
+        });
+
+        if (uploadResponse.ok) {
+            alert('File uploaded successfully!');
+        } else {
+            alert('Failed to upload file.');
         }
-
-        function createFileList(file) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(new File([file], 'captured-image.jpg', { type: file.type }));
-            return dataTransfer.files;
-        }
-
-        async function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-
-            if (!file) {
-                alert('Please select a file to upload.');
-                return;
-            }
-
-            // Check file type to ensure it is MOV, MP4, or an image
-            const validTypes = ['video/mp4', 'video/quicktime', 'image/jpeg', 'image/png', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                alert('Invalid file type. Only MOV, MP4, and image files are allowed.');
-                return;
-            }
-
-            try {
-                // Fetch a pre-signed URL from your server
-                const presignResponse = await fetch('https://l6rc4odvoftygwhx4zlf7dwgwu0cldvr.lambda-url.us-east-1.on.aws/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        fileName: file.name,
-                        fileType: file.type,
-                        key: 'silo-night',
-                        bucket: 'silo-night'
-                    })
-                });
-
-                if (!presignResponse.ok) {
-                    throw new Error('Failed to get presigned URL');
-                }
-
-                const { uploadUrl } = await presignResponse.json();
-
-                // Upload the file to S3 using the pre-signed URL
-                const uploadResponse = await fetch(uploadUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': file.type
-                    },
-                    body: file
-                });
-
-                if (uploadResponse.ok) {
-                    alert('File uploaded successfully!');
-                } else {
-                    alert('Failed to upload file.');
-                }
-            } catch (error) {
-                console.error('Error uploading file:', error);
-                alert('Error uploading file. Check console for details.');
-            }
-        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading file. Check console for details.');
+    }
+}
