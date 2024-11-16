@@ -159,6 +159,10 @@ async function uploadFile() {
 
         if (uploadResponse.ok) {
             alert('File uploaded successfully!');
+            ws.send(JSON.stringify({ 
+                'file': uploadUrl,
+                'user': 'silo-night',
+            }));
         } else {
             alert('Failed to upload file.');
         }
