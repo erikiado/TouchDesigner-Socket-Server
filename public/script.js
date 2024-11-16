@@ -141,8 +141,11 @@ async function uploadFile() {
             throw new Error('Failed to get presigned URL');
         }
 
-        const { uploadUrl } = await presignResponse.json();
+        const { presigned_url } = await presignResponse.json();
 
+        console.log('Presigned URL:', presigned_url);
+
+        const uploadUrl = presigned_url;
         console.log('Upload URL:', uploadUrl);
 
         // Upload the file to S3 using the pre-signed URL
