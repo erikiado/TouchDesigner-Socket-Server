@@ -87,21 +87,18 @@ app.get('/', (req, res) => {
 });
 
 app.post('/get-presign-url', async (req, res) => {
-  console.log('get-presign-url');
-  console.log('req.body: ', req.body);
-  const body = req.body;
-
   const { fileName, fileType, key, bucket } = req.body;
   console.log('fileName: ', fileName);
   console.log('fileType: ', fileType);
-  
+ 
+  const filePath = `${key}/${fileName}`;
   let functionUrl = 'https://l6rc4odvoftygwhx4zlf7dwgwu0cldvr.lambda-url.us-east-1.on.aws/'; 
   console.log('functionUrl: ', functionUrl);
 
   // send data to lambda function 
   preSignUrl = await axios.post(functionUrl, {
-    fileName,
-    fileType,
+    "file":filePath,
+    "file_type":fileType,
     key,
     bucket
   });
