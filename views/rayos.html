@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayos Control</title>
+    <link rel="stylesheet" href="/rayos-styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="jac-title">Rayos Control</h1>
+        <p>Panel de control para Rayos</p>
+        
+        <div id="status-indicator">
+            <span id="connection-status">Desconectado</span>
+        </div>
+
+        <div id="rayos-grid-container">
+            <div id="rayos-grid"></div>
+        </div>
+
+        <div id="detail-panel">
+            <h2 id="selected-item-title">Ningún elemento seleccionado</h2>
+            <div id="selected-item-details"></div>
+        </div>
+    </div>
+
+    <div id="modal" style="display: none;">
+        <div id="modalContent">
+            <div>
+                <h2 class="jac-title" style="margin-bottom:1rem;">Desconectado</h2>
+                <p>Recarga la página para volver a conectarte</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/rayos-script.js" defer></script>
+</body>
+</html> 

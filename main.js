@@ -38,6 +38,7 @@ wss.on("connection", function (ws, req) {
       console.log('keepAlive');
       return;
     }
+    console.log('stringifiedData: ', stringifiedData);
     broadcast(ws, stringifiedData, false);
   });
 
@@ -84,6 +85,10 @@ const broadcast = (ws, message, includeSelf) => {
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+app.get('/rayos', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'rayos.html'));
 });
 
 app.post('/get-presign-url', async (req, res) => {

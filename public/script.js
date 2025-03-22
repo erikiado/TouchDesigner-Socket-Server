@@ -31,6 +31,7 @@ ws.addEventListener('open', (event) => {
 
 ws.addEventListener('message', (message) => {
   if (message && message.data) {
+    console.log("got data", message.data);
     if (message.data === "ping") {
       console.log("got ping");
       ws.send("pong");
