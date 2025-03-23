@@ -56,6 +56,7 @@ body {
     background-color: #2a2a2a;
     padding: 20px;
     border-radius: 10px;
+    -webkit-overflow-scrolling: touch; /* Para mejor desplazamiento en iOS */
 }
 
 #rayos-grid {
@@ -63,6 +64,7 @@ body {
     grid-template-columns: repeat(8, 1fr);
     gap: 10px;
     width: 100%;
+    min-width: 0; /* Permite que el grid se ajuste al contenedor */
 }
 
 .grid-item {
@@ -73,6 +75,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     border: 2px solid transparent;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .grid-item:hover {
@@ -80,31 +83,37 @@ body {
     z-index: 2;
 }
 
-/* Colores por fila */
+/* Colores por fila con efectos de glow */
 .grid-item.row-red {
     background-color: #8b3a3a;
+    box-shadow: 0 0 10px rgba(139, 58, 58, 0.4);
 }
 
 .grid-item.row-blue {
     background-color: #2a4d69;
+    box-shadow: 0 0 10px rgba(42, 77, 105, 0.4);
 }
 
 .grid-item.row-yellow {
     background-color: #8b7d39;
+    box-shadow: 0 0 10px rgba(139, 125, 57, 0.4);
 }
 
 .grid-item.row-purple {
     background-color: #5e366e;
+    box-shadow: 0 0 10px rgba(94, 54, 110, 0.4);
 }
 
 .grid-item.row-multi {
     background: linear-gradient(45deg, #8b3a3a, #2a4d69, #8b7d39, #5e366e);
+    box-shadow: 0 0 10px rgba(139, 58, 58, 0.3), 0 0 10px rgba(42, 77, 105, 0.3), 0 0 10px rgba(139, 125, 57, 0.3), 0 0 10px rgba(94, 54, 110, 0.3);
 }
 
-/* Indicador de selección */
+/* Indicador de selección con glow mejorado */
 .grid-item.active {
     border: 2px solid white;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    z-index: 3;
 }
 
 /* Indicador de estado loop (1) */
@@ -147,6 +156,26 @@ body {
     font-weight: bold;
 }
 
+/* Indicador para generadores */
+.grid-item.generator-active::after {
+    content: "⚙";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    background-color: #3498db; /* Color azul para generadores */
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+}
+
 .grid-item-content {
     position: absolute;
     top: 0;
@@ -163,6 +192,17 @@ body {
     overflow: hidden;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Estilos para el emoji */
+.grid-item-emoji {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .grid-item-title {
@@ -221,13 +261,76 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     #rayos-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(8, 1fr);
+        gap: 5px;
+    }
+    
+    .grid-item-emoji {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+    }
+    
+    .grid-item-title {
+        font-size: 0.7rem;
+    }
+    
+    .grid-item-type {
+        font-size: 0.6rem;
+        padding: 1px 4px;
     }
 }
 
 @media (max-width: 480px) {
+    body {
+        padding: 10px 5px;
+    }
+    
+    .page-container {
+        padding: 10px;
+    }
+    
     #rayos-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(8, 1fr);
+        gap: 2px;
+        width: 100%;
+        min-width: 320px; /* Ancho mínimo para que se puedan ver las 8 columnas */
+    }
+    
+    #rayos-grid-container {
+        padding: 10px 5px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .grid-item-emoji {
+        font-size: 1.2rem;
+        margin-bottom: 2px;
+    }
+    
+    .grid-item-title {
+        font-size: 0.6rem;
+    }
+    
+    .grid-item-type {
+        font-size: 0.5rem;
+        padding: 1px 2px;
+    }
+    
+    #toast-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        min-width: 0;
+        padding: 10px 15px;
+    }
+    
+    #toast-title {
+        font-size: 1rem;
+    }
+    
+    #toast-content {
+        font-size: 0.8rem;
     }
 }
 

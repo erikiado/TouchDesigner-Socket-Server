@@ -14,6 +14,82 @@ const toastTitle = document.getElementById('toast-title');
 const toastContent = document.getElementById('toast-content');
 const modal = document.getElementById('modal');
 
+// Diccionario de emojis para diferentes nombres
+const emojiDictionary = {
+    // Nombres específicos
+    "rayettes_1": "💃",
+    "rayoman": "🦸",
+    "qrayos": "⚡",
+    "promo": "📢",
+    "cibacopa": "🏀",
+    "househype": "🛼",
+    "rayettes2": "👯",
+    "ganamos": "🏆",
+    "gallos90": "🐓",
+    "photobooth": "📸",
+    "encendido": "🔌",
+    "ruido1": "🔉🎚️",
+    "ramsey": "👨🎧",
+    "lth": "🪫",
+    "rayostore": "🛒",
+    "momentomagico": "✨",
+    "quetruene": "🌩️",
+    "vamosrayos": "⚔️⚡",
+    "ruido2": "🔊",
+    "ruidomeh": "📣",
+    "polloteria": "🍗",
+    "yellowbar": "🍺",
+    "altatension": "⚠️",
+    "defense": "🛡️",
+    "delzade3": "🏭",
+    "vaquita": "🐄",
+    "eatsalad": "🥗",
+    "tomason": "🍅",
+    "armando": "🦐",
+    "pipeso": "🪠",
+    "crujisalsa": "🌶️",
+    "clavadataste": "🍴",
+    "kissmaderan": "💋",
+    "dermacy": "🧴",
+    "orus": "🎰",
+    "pastello": "🎂",
+    "vwagricola": "🚜",
+    "puntapeninsula": "🏝️",
+    "sanbenito": "🏥",
+    
+    // Prefijos para coincidencias parciales
+    "rayo": "⚡",
+    "logo": "🔠",
+    "jugadores": "👥",
+    "visita": "🚶",
+    "bandera": "🇲🇽",
+    "ruido": "📢",
+    "generadores": "⚙️",
+    
+    // Emojis aleatorios relacionados con electricidad y rayos
+    // para elementos sin coincidencia específica
+    "random": ["⚡", "💡", "🔌", "⚠️", "🔋", "📡", "⛈️", "🌩️", "🔆", "📶", "🌟", "⭐", "🌠", "✨"]
+};
+
+// Obtener un emoji para un nombre específico
+function getEmojiForName(name) {
+    // Verificar si existe una coincidencia exacta
+    if (emojiDictionary[name]) {
+        return emojiDictionary[name];
+    }
+    
+    // Verificar coincidencias parciales por prefijo
+    for (const prefix in emojiDictionary) {
+        if (name.toLowerCase().includes(prefix.toLowerCase()) && prefix !== "random") {
+            return emojiDictionary[prefix];
+        }
+    }
+    
+    // Si no hay coincidencia, devolver un emoji aleatorio
+    const randomEmojis = emojiDictionary["random"];
+    return randomEmojis[Math.floor(Math.random() * randomEmojis.length)];
+}
+
 // Estado actual de los controles
 let currentControls = {};
 let gridItems = {};
@@ -32,6 +108,9 @@ function initializeGrid() {
         const gridItemContent = document.createElement('div');
         gridItemContent.className = 'grid-item-content';
         
+        const gridItemEmoji = document.createElement('div');
+        gridItemEmoji.className = 'grid-item-emoji';
+        
         const gridItemTitle = document.createElement('div');
         gridItemTitle.className = 'grid-item-title';
         gridItemTitle.textContent = 'Vacío';
@@ -39,6 +118,7 @@ function initializeGrid() {
         const gridItemType = document.createElement('div');
         gridItemType.className = 'grid-item-type';
         
+        gridItemContent.appendChild(gridItemEmoji);
         gridItemContent.appendChild(gridItemTitle);
         gridItemContent.appendChild(gridItemType);
         gridItem.appendChild(gridItemContent);
@@ -65,6 +145,7 @@ function initializeGrid() {
         // Guardar referencia al elemento para acceso rápido
         gridItems[i] = {
             element: gridItem,
+            emoji: gridItemEmoji,
             title: gridItemTitle,
             type: gridItemType
         };
@@ -165,10 +246,12 @@ function updateGrid(data) {
     // Limpiar el grid
     Object.values(gridItems).forEach(item => {
         item.title.textContent = 'Vacío';
+        item.emoji.textContent = '';
         item.type.textContent = '';
         item.element.classList.remove('active');
         item.element.classList.remove('loop-active');
         item.element.classList.remove('trigger-active');
+        item.element.classList.remove('generator-active');
     });
     
     // Ordenar las claves por el primer elemento del array (índice)
@@ -196,20 +279,31 @@ function updateGrid(data) {
             if (gridItems[gridIndex]) {
                 gridItems[gridIndex].title.textContent = key;
                 
+                // Asignar emoji según el nombre
+                gridItems[gridIndex].emoji.textContent = getEmojiForName(key);
+                
                 // Determinar tipo
                 let type = '';
+                let isGenerator = false;
+                
                 if (itemData[1] && itemData[1].includes('generadores')) {
                     type = 'Generador';
+                    isGenerator = true;
                 } else if (itemData[2] && itemData[2] !== '') {
                     type = 'Video';
                 }
                 
                 gridItems[gridIndex].type.textContent = type;
                 
-                // Marcar como loop o trigger según el valor
-                if (itemData[3] === "1") {
+                // Marcar como loop o trigger según el valor, excepto si es generador
+                if (isGenerator) {
+                    // Los generadores siempre tienen el indicador de generador, sin importar el valor
+                    gridItems[gridIndex].element.classList.add('generator-active');
+                } else if (itemData[3] === "1") {
+                    // Videos en loop
                     gridItems[gridIndex].element.classList.add('loop-active');
                 } else if (itemData[3] === "0") {
+                    // Videos en trigger
                     gridItems[gridIndex].element.classList.add('trigger-active');
                 }
                 
