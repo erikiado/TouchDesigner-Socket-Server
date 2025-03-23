@@ -72,6 +72,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .grid-item:hover {
@@ -79,10 +80,71 @@ body {
     z-index: 2;
 }
 
+/* Colores por fila */
+.grid-item.row-red {
+    background-color: #8b3a3a;
+}
+
+.grid-item.row-blue {
+    background-color: #2a4d69;
+}
+
+.grid-item.row-yellow {
+    background-color: #8b7d39;
+}
+
+.grid-item.row-purple {
+    background-color: #5e366e;
+}
+
+.grid-item.row-multi {
+    background: linear-gradient(45deg, #8b3a3a, #2a4d69, #8b7d39, #5e366e);
+}
+
+/* Indicador de selección */
 .grid-item.active {
-    background-color: #ffd700;
-    color: #000;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Indicador de estado loop (1) */
+.grid-item.loop-active::after {
+    content: "⟳";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    background-color: #8e44ad; /* Color morado para loop */
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Indicador de estado trigger (0) */
+.grid-item.trigger-active::after {
+    content: "▶";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    background-color: #e91e63; /* Color rosa para trigger */
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
 }
 
 .grid-item-content {
@@ -95,37 +157,43 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 5px;
+    padding: 8px;
     text-align: center;
     font-size: 0.8rem;
     overflow: hidden;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .grid-item-title {
     font-weight: bold;
     margin-bottom: 5px;
+    word-break: break-word;
+    font-size: 0.85rem;
+    max-height: 75%;
+    overflow: hidden;
 }
 
 .grid-item-type {
     font-size: 0.7rem;
-    opacity: 0.7;
+    opacity: 0.8;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-top: 2px;
 }
 
+/* Eliminar estilos del panel de detalles que ya no se usan */
 #detail-panel {
-    background-color: #2a2a2a;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
+    display: none;
 }
 
 #selected-item-title {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #ffd700;
+    display: none;
 }
 
 #selected-item-details {
-    line-height: 1.6;
+    display: none;
 }
 
 /* Modal styles */
@@ -161,4 +229,54 @@ body {
     #rayos-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* Estilos para el toast de notificación */
+#toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(42, 42, 42, 0.95);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 350px;
+    min-width: 250px;
+    transition: all 0.3s ease;
+    border-left: 4px solid #ffd700;
+}
+
+#toast-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+#toast-notification.hidden {
+    opacity: 0;
+    transform: translateX(50px);
+    pointer-events: none;
+}
+
+#toast-notification.fadeout {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+#toast-title {
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 5px;
+}
+
+#toast-content {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+#toast-content p {
+    margin: 5px 0;
 } 

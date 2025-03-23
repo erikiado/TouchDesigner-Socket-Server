@@ -9,13 +9,15 @@ if (window.location.hostname === 'tds.nu9ve.xyz' || window.location.hostname.inc
 let ws = new WebSocket(wsUrl);
 const statusIndicator = document.getElementById('connection-status');
 const rayosGrid = document.getElementById('rayos-grid');
-const selectedItemTitle = document.getElementById('selected-item-title');
-const selectedItemDetails = document.getElementById('selected-item-details');
+const toastNotification = document.getElementById('toast-notification');
+const toastTitle = document.getElementById('toast-title');
+const toastContent = document.getElementById('toast-content');
 const modal = document.getElementById('modal');
 
 // Estado actual de los controles
 let currentControls = {};
 let gridItems = {};
+let selectionTimer = null;
 
 // Inicializar el grid 8x8
 function initializeGrid() {
@@ -43,16 +45,19 @@ function initializeGrid() {
         
         // Agregar evento de clic para mostrar detalles
         gridItem.addEventListener('click', () => {
-            // Eliminar clase active de todos los elementos
-            document.querySelectorAll('.grid-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            // Eliminar clase active de todos los elementos y limpiar timer previo
+            clearSelectionAndTimer();
             
             // Agregar clase active al elemento seleccionado
             gridItem.classList.add('active');
             
-            // Mostrar detalles del elemento
+            // Mostrar detalles del elemento en el toast
             showItemDetails(i);
+            
+            // Configurar el timer para remover la selección después de 5 segundos
+            selectionTimer = setTimeout(() => {
+                clearSelectionAndTimer();
+            }, 5000);
         });
         
         rayosGrid.appendChild(gridItem);
@@ -66,19 +71,51 @@ function initializeGrid() {
     }
 }
 
-// Mostrar detalles de un elemento
-function showItemDetails(index) {
-    const itemKey = Object.keys(currentControls)[index];
+// Limpiar la selección actual y el timer
+function clearSelectionAndTimer() {
+    // Limpiar timer si existe
+    if (selectionTimer) {
+        clearTimeout(selectionTimer);
+        selectionTimer = null;
+    }
     
-    if (!itemKey || itemKey === '') {
-        selectedItemTitle.textContent = 'Ningún elemento seleccionado';
-        selectedItemDetails.innerHTML = '<p>No hay información disponible</p>';
+    // Quitar selección de todos los elementos
+    document.querySelectorAll('.grid-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Ocultar el toast
+    hideToast();
+}
+
+// Mostrar detalles de un elemento en el toast
+function showItemDetails(gridIndex) {
+    // Convertir el índice del grid al índice del objeto de controles
+    const row = Math.floor(gridIndex / 8);
+    const col = 7 - (gridIndex % 8); // Invertir para obtener el índice original
+    const dataIndex = row * 8 + col;
+    
+    // Convertir el índice a la clave correspondiente
+    const keys = Object.keys(currentControls);
+    let foundKey = null;
+    
+    // Buscar la clave que tiene el valor de índice correcto
+    keys.forEach(key => {
+        if (currentControls[key] && parseInt(currentControls[key][0]) === dataIndex) {
+            foundKey = key;
+        }
+    });
+    
+    if (!foundKey) {
+        toastTitle.textContent = 'Elemento no disponible';
+        toastContent.innerHTML = '<p>No hay información para mostrar</p>';
+        showToast();
         return;
     }
     
-    selectedItemTitle.textContent = itemKey;
+    toastTitle.textContent = foundKey;
     
-    const itemData = currentControls[itemKey];
+    const itemData = currentControls[foundKey];
     let detailsHTML = '';
     
     if (itemData) {
@@ -92,10 +129,35 @@ function showItemDetails(index) {
             detailsHTML += `<p><strong>Archivo:</strong> ${itemData[2]}</p>`;
         }
         
-        detailsHTML += `<p><strong>Estado:</strong> ${itemData[3] === "1" ? "Activo" : "Inactivo"}</p>`;
+        detailsHTML += `<p><strong>Estado:</strong> ${itemData[3] === "1" ? "Loop" : "Trigger"}</p>`;
     }
     
-    selectedItemDetails.innerHTML = detailsHTML;
+    toastContent.innerHTML = detailsHTML;
+    showToast();
+}
+
+// Mostrar el toast de notificación
+function showToast() {
+    // Asegurarse que el toast está inicialmente sin animación
+    toastNotification.classList.remove('fadeout');
+    toastNotification.classList.remove('hidden');
+    
+    // Forzar un reflow para asegurar que la transición funcione
+    void toastNotification.offsetWidth;
+    
+    // Ahora mostrar con la transición
+    toastNotification.classList.add('show');
+}
+
+// Ocultar el toast de notificación
+function hideToast() {
+    toastNotification.classList.remove('show');
+    toastNotification.classList.add('fadeout');
+    
+    // Esperar a que termine la animación antes de ocultarlo completamente
+    setTimeout(() => {
+        toastNotification.classList.add('hidden');
+    }, 300);
 }
 
 // Actualizar el grid con datos recibidos
@@ -105,6 +167,8 @@ function updateGrid(data) {
         item.title.textContent = 'Vacío';
         item.type.textContent = '';
         item.element.classList.remove('active');
+        item.element.classList.remove('loop-active');
+        item.element.classList.remove('trigger-active');
     });
     
     // Ordenar las claves por el primer elemento del array (índice)
@@ -121,25 +185,60 @@ function updateGrid(data) {
         const itemData = data[key];
         const index = parseInt(itemData[0]);
         
-        if (index >= 0 && index < 64 && gridItems[index]) {
-            gridItems[index].title.textContent = key;
+        if (index >= 0 && index < 64) {
+            // Convertir el índice lineal al formato de grid 8x8
+            // El primer elemento (0) está en la esquina superior derecha
+            // y avanza hacia la izquierda
+            const row = Math.floor(index / 8);
+            const col = 7 - (index % 8); // Invertir el orden de las columnas
+            const gridIndex = row * 8 + col;
             
-            // Determinar tipo
-            let type = '';
-            if (itemData[1] && itemData[1].includes('generadores')) {
-                type = 'Generador';
-            } else if (itemData[2] && itemData[2] !== '') {
-                type = 'Video';
-            }
-            
-            gridItems[index].type.textContent = type;
-            
-            // Marcar como activo si corresponde
-            if (itemData[3] === "1") {
-                gridItems[index].element.classList.add('active');
+            if (gridItems[gridIndex]) {
+                gridItems[gridIndex].title.textContent = key;
+                
+                // Determinar tipo
+                let type = '';
+                if (itemData[1] && itemData[1].includes('generadores')) {
+                    type = 'Generador';
+                } else if (itemData[2] && itemData[2] !== '') {
+                    type = 'Video';
+                }
+                
+                gridItems[gridIndex].type.textContent = type;
+                
+                // Marcar como loop o trigger según el valor
+                if (itemData[3] === "1") {
+                    gridItems[gridIndex].element.classList.add('loop-active');
+                } else if (itemData[3] === "0") {
+                    gridItems[gridIndex].element.classList.add('trigger-active');
+                }
+                
+                // Aplicar color según la fila
+                applyColorByRow(gridIndex, row);
             }
         }
     });
+}
+
+// Aplicar color según la fila
+function applyColorByRow(gridIndex, row) {
+    const element = gridItems[gridIndex].element;
+    
+    // Eliminar clases de color existentes
+    element.classList.remove('row-red', 'row-blue', 'row-yellow', 'row-purple', 'row-multi');
+    
+    // Aplicar clase de color según la fila
+    if (row < 2) {
+        element.classList.add('row-red');
+    } else if (row < 4) {
+        element.classList.add('row-blue');
+    } else if (row < 6) {
+        element.classList.add('row-yellow');
+    } else if (row < 7) {
+        element.classList.add('row-purple');
+    } else {
+        element.classList.add('row-multi');
+    }
 }
 
 // Manejar eventos de WebSocket
@@ -199,6 +298,13 @@ function closeModal() {
 
 // Inicializar la aplicación
 document.addEventListener('DOMContentLoaded', () => {
+    // Asegurarse que el toast esté completamente oculto inicialmente
+    toastNotification.style.display = 'none';
+    setTimeout(() => {
+        toastNotification.style.display = '';
+        toastNotification.classList.add('hidden');
+    }, 100);
+    
     initializeGrid();
     statusIndicator.textContent = 'Conectando...';
     statusIndicator.classList.add('disconnected');

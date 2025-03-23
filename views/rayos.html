@@ -9,8 +9,8 @@
 </head>
 <body>
     <div class="page-container">
-        <h1 class="jac-title">Rayos Control</h1>
-        <p>Panel de control para Rayos</p>
+        <h1 class="jac-title">Control de Rayos</h1>
+        <p>Panel de control para visualización y estado de elementos</p>
         
         <div id="status-indicator">
             <span id="connection-status">Desconectado</span>
@@ -19,11 +19,11 @@
         <div id="rayos-grid-container">
             <div id="rayos-grid"></div>
         </div>
+    </div>
 
-        <div id="detail-panel">
-            <h2 id="selected-item-title">Ningún elemento seleccionado</h2>
-            <div id="selected-item-details"></div>
-        </div>
+    <div id="toast-notification">
+        <h3 id="toast-title">Elemento seleccionado</h3>
+        <div id="toast-content"></div>
     </div>
 
     <div id="modal" style="display: none;">
